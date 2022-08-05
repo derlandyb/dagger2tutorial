@@ -19,12 +19,12 @@ class InMemoryDataBase @Inject constructor() : Database {
         private var balance: BigDecimal = BigDecimal.ZERO
 
         override fun deposit(amount: BigDecimal) {
-            checkNonNegative(amount, "deposit")
+            checkNonNegative(amount, DEPOSIT_ACTION)
             balance = balance.add(amount)
         }
 
         override fun withdraw(amount: BigDecimal) {
-            checkNonNegative(amount, "withdraw")
+            checkNonNegative(amount, WITHDRAW_ACTION)
             balance = balance.subtract(amount)
         }
 
@@ -33,9 +33,15 @@ class InMemoryDataBase @Inject constructor() : Database {
         private fun checkNonNegative(amount: BigDecimal, action: String) {
             if (amount.signum() == -1) {
                 throw java.lang.IllegalArgumentException(
-                    String.format("Cannot %s negative amounts: %s", action, amount)
+                    String.format(NON_NEGATIVE_AMOUNT_MESSAGE, action, amount)
                 )
             }
         }
+    }
+
+    private companion object {
+        const val NON_NEGATIVE_AMOUNT_MESSAGE = "Cannot %s negative amounts: %s"
+        const val DEPOSIT_ACTION = "deposit"
+        const val WITHDRAW_ACTION = "withdraw"
     }
 }

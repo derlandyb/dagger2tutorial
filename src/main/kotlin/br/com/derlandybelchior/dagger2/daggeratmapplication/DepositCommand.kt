@@ -7,13 +7,14 @@ import javax.inject.Inject
 class DepositCommand @Inject constructor(
     private val account: Account,
     override val outputter: Outputter,
-    private val withdrawalLimiter: WithdrawalLimiter
-): BigDecimalCommand(outputter) {
+    private val withdrawalLimiter: WithdrawalLimiter,
+    private val commandLineAtmMessages: CommandLineAtmMessages
+): BigDecimalCommand(outputter, commandLineAtmMessages) {
     override fun key() = "deposit"
 
     override fun handleAmount(amount: BigDecimal) {
         account.deposit(amount)
         withdrawalLimiter.recordDeposit(amount)
-        outputter.output("${account.username} now has ${account.balance()}")
+        commandLineAtmMessages.newBalance(account.username, account.balance())
     }
 }

@@ -2,14 +2,17 @@ package br.com.derlandybelchior.dagger2.daggeratmapplication
 
 import java.math.BigDecimal
 
-abstract class BigDecimalCommand(protected open val outputter: Outputter) : SingleArgCommand(){
+abstract class BigDecimalCommand(
+    protected open val outputter: Outputter,
+    private val commandLineAtmMessages: CommandLineAtmMessages
+) : SingleArgCommand(){
 
     override fun handleArg(arg: String): Command.Result {
         val amount = tryParse(arg)
 
         amount?.let {
             if(amount.signum() <= 0) {
-                outputter.output("amount must be positive")
+                commandLineAtmMessages.onlyPositiveAmount()
             } else {
                 handleAmount(it)
             }
